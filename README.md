@@ -11,7 +11,8 @@
 <img width="2859" height="882" alt="2" src="https://github.com/user-attachments/assets/626334e0-e589-48e1-a6e7-12c064d213a2" />
 ⚽获取坐标页：
 <img width="1488" height="757" alt="3" src="https://github.com/user-attachments/assets/cf69c089-fe87-43e6-b4de-bcac8b4388db" />
-⚽
+⚽坐标页点加载图片之后：
+<img width="1477" height="1011" alt="4 (2)" src="https://github.com/user-attachments/assets/63071e64-f1b4-438d-a4a7-be319f6af7d9" />
 
 
 
