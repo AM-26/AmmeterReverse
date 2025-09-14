@@ -16,9 +16,12 @@ import pyperclip
 class LDPlayerController:
     flag = 1
     runcount = 1
+    dice = 1
+    getFireFlag = 0
+    getTicketFlag = 0
     def __init__(self, root):
         self.root = root
-        self.root.title("雷电模拟器控制器")
+        self.root.title("电表倒转护肝助手")
         self.root.geometry("1920x1080")
         self.root.resizable(True, True)
         
@@ -31,8 +34,14 @@ class LDPlayerController:
         self.original_width = 1920
         self.original_height = 1080
 
+        # 创建主框架
+        self.create_widgets()
+
         # 设置雷电模拟器ADB路径
-        self.adb_path = r'D:\androidSim\leidian\LDPlayer9\adb.exe'
+        #self.adb_path = r'D:\androidSim\leidian\LDPlayer9\adb.exe'
+
+        #self.adb_path = self.adbpathLabel.get()
+        #print(f"adb路径为：{self.adb_path}\n")
         
         # 截图保存目录
         self.screenshot_dir = r'D:\paddleOCR\pythonScreenShot'
@@ -47,14 +56,14 @@ class LDPlayerController:
                 os.makedirs(self.screenshot_dir, exist_ok=True)
         
         # 创建主框架
-        self.create_widgets()
+        #self.create_widgets()
         
         # 检查ADB路径
-        if not os.path.exists(self.adb_path):
-            messagebox.showerror("错误", f"未找到ADB路径: {self.adb_path}")
+        #if not os.path.exists(self.adb_path):
+        #    messagebox.showerror("错误", f"未找到ADB路径: {self.adb_path}")
         
         # 启动时自动连接设备
-        self.connect_device()
+        #self.connect_device()
 
     def create_widgets(self):
         # 创建标签页
@@ -85,6 +94,11 @@ class LDPlayerController:
         ttk.Button(device_frame, text="连接设备", command=self.connect_device).grid(row=0, column=0, padx=5, pady=5)
         ttk.Button(device_frame, text="断开设备", command=self.disconnect_device).grid(row=0, column=1, padx=5, pady=5)
         ttk.Button(device_frame, text="重启ADB服务", command=self.restart_adb).grid(row=0, column=2, padx=5, pady=5)
+
+        ttk.Label(device_frame, text="adb路径:").grid(row=0, column=3, padx=5, pady=5)
+        self.adbpathLabel = ttk.Entry(device_frame, width=80)
+        self.adbpathLabel.grid(row=0, column=4, padx=5, pady=5)
+        self.adbpathLabel.insert(0, r"D:\androidSim\leidian\LDPlayer9\adb.exe")
         
         self.device_status = tk.StringVar()
         self.device_status.set("设备状态: 未连接")
@@ -103,27 +117,46 @@ class LDPlayerController:
         click_frame.pack(padx=10, pady=10, fill="x")
         
         ttk.Label(click_frame, text="X坐标:").grid(row=0, column=0, padx=5, pady=5)
-        self.x_entry = ttk.Entry(click_frame, width=8)
+        self.x_entry = ttk.Entry(click_frame, width=4)
         self.x_entry.grid(row=0, column=1, padx=5, pady=5)
         self.x_entry.insert(0, "500")
         
         ttk.Label(click_frame, text="Y坐标:").grid(row=0, column=2, padx=5, pady=5)
-        self.y_entry = ttk.Entry(click_frame, width=8)
+        self.y_entry = ttk.Entry(click_frame, width=4)
         self.y_entry.grid(row=0, column=3, padx=5, pady=5)
         self.y_entry.insert(0, "500")
         
         ttk.Label(click_frame, text="点击次数:").grid(row=0, column=4, padx=5, pady=5)
-        self.click_count_entry = ttk.Entry(click_frame, width=8)
+        self.click_count_entry = ttk.Entry(click_frame, width=2)
         self.click_count_entry.grid(row=0, column=5, padx=5, pady=5)
         self.click_count_entry.insert(0, "1")
         
         ttk.Label(click_frame, text="间隔(秒):").grid(row=0, column=6, padx=5, pady=5)
-        self.interval_entry = ttk.Entry(click_frame, width=8)
+        self.interval_entry = ttk.Entry(click_frame, width=2)
         self.interval_entry.grid(row=0, column=7, padx=5, pady=5)
         self.interval_entry.insert(0, "1")
         
         ttk.Button(click_frame, text="单次点击", command=self.single_click).grid(row=0, column=8, padx=5, pady=5)
         ttk.Button(click_frame, text="连续点击", command=self.multi_click).grid(row=0, column=9, padx=5, pady=5)
+        ttk.Label(click_frame,text='后勤分队：').grid(row=0, column=10, padx=5, pady=5)
+        ttk.Label(click_frame, text="一个循环获取烛火次数（每次6烛火）:").grid(row=0, column=11, padx=5, pady=5)
+        self.logi_get_fire_entry = ttk.Entry(click_frame, width=6)
+        self.logi_get_fire_entry.grid(row=0, column=12, padx=5, pady=5)
+        self.logi_get_fire_entry.insert(0, "1")
+        ttk.Label(click_frame, text="获取票卷次数（每次12票卷）:").grid(row=0, column=13, padx=5, pady=5)
+        self.logi_get_ticket_entry = ttk.Entry(click_frame, width=6)
+        self.logi_get_ticket_entry.grid(row=0, column=14, padx=5, pady=5)
+        self.logi_get_ticket_entry.insert(0, "2")
+        ttk.Button(click_frame, text="后勤队电表倒转", command=self.logisticsAR).grid(row=0, column=15, padx=5, pady=5)
+        ttk.Button(click_frame, text="后勤队烛火", command=self.logisticsGetFire).grid(row=0, column=16, padx=5, pady=5)
+        ttk.Button(click_frame, text="后勤队票卷", command=self.logisticsGetTicket).grid(row=0, column=17, padx=5, pady=5)
+        ttk.Button(click_frame, text="后勤队源石锭", command=self.logisticsGetMoney).grid(row=0, column=18, padx=5, pady=5)
+        
+        ttk.Label(click_frame, text="获取藏品次数(每次6个):").grid(row=0, column=19, padx=5, pady=5)
+        self.logi_get_collection_entry = ttk.Entry(click_frame, width=6)
+        self.logi_get_collection_entry.grid(row=0, column=20, padx=5, pady=5)
+        self.logi_get_collection_entry.insert(0, "10")
+        ttk.Button(click_frame, text="后勤队藏品", command=self.logisticsGetCollection).grid(row=0, column=21, padx=5, pady=5)
 
         # 截图功能标签页内容
         #screenshot_frame = ttk.Frame(screenshot_tab)
@@ -149,12 +182,12 @@ class LDPlayerController:
         ttk.Label(btn_frame, text="令节点X坐标:").pack(side=tk.LEFT, padx=5)
         self.ling_x_entry = ttk.Entry(btn_frame, width=8)
         self.ling_x_entry.pack(side=tk.LEFT, padx=5)
-        self.ling_x_entry.insert(0, "540")
+        self.ling_x_entry.insert(0, "1181")
         
         ttk.Label(btn_frame, text="令节点Y坐标:").pack(side=tk.LEFT, padx=5)
         self.ling_y_entry = ttk.Entry(btn_frame, width=8)
         self.ling_y_entry.pack(side=tk.LEFT, padx=5)
-        self.ling_y_entry.insert(0, "370")
+        self.ling_y_entry.insert(0, "356")
 
         ttk.Label(btn_frame, text="运行次数:(电表倒转模式下为每次获取烛火对应的源石锭获取次数)").pack(side=tk.LEFT, padx=5)
         self.runcount_entry = ttk.Entry(btn_frame, width=8)
@@ -354,6 +387,9 @@ class LDPlayerController:
     
     def connect_device(self):
         """连接设备"""
+        self.adb_path = self.adbpathLabel.get()
+        print(f"adb路径为：{self.adb_path}\n")
+
         def connect_thread():
             self.log_message("正在连接设备...")
             
@@ -625,6 +661,7 @@ class LDPlayerController:
         return res        
 
     def targetOCR(self):
+        self.getPic()
         # 初始化 PaddleOCR 实例
         ocr = PaddleOCR(
             use_doc_orientation_classify=False,
@@ -642,10 +679,10 @@ class LDPlayerController:
 
         # 2. 定义四个顶点坐标 (按顺序：左上、右上、右下、左下)
         points = [
-            (1700, 100),   # 左上
-            (1870, 100),   # 右上
-            (1870, 270),   # 右下
-            (1700, 270)    # 左下
+            (1780, 25),   # 左上
+            (1890, 25),   # 右上
+            (1890, 75),   # 右下
+            (1780, 75)    # 左下
         ]
         # 3. 计算裁剪区域的边界
         x_min = min(p[0] for p in points)  # 最左边的x坐标
@@ -710,8 +747,10 @@ class LDPlayerController:
         # 最终结果
         if result is not None:
             print(f"最终提取的数字: {result} (类型: {type(result)})")
-            self.x_entry.delete(0, "end")
-            self.x_entry.insert(0, str(result))
+            #self.x_entry.delete(0, "end")
+            #self.x_entry.insert(0, str(result))
+            self.dice = int(result)
+            print(f"投骰子{result}次\n")
         else:
             print("警告: 未在OCR结果中找到任何数字")
     
@@ -753,6 +792,182 @@ class LDPlayerController:
 
         # 保存截图路径
         self.current_screenshot = temp_path
+
+    def logisticsAR(self):
+        counter = 1
+        while(1):
+            print(f"第{counter}轮:\n")
+            self.targetOCR()
+            self.logi_getFire_count = int(self.logi_get_fire_entry.get())
+            print(f"获取{self.logi_getFire_count}组烛火（每组6点）\n")
+            self.logi_getTicket_count = int(self.logi_get_ticket_entry.get())
+            print(f"获取{self.logi_getTicket_count}组票卷（每组12张）\n")
+            #self.getFireFlag = 0
+            #self.getTicketFlag = 0
+            while(self.dice):
+                self.logisticsGetMoney()
+            while(self.logi_getFire_count):
+                self.logisticsGetFire()
+                self.logi_getFire_count -= 1
+            while(self.logi_getTicket_count):
+                self.logisticsGetTicket()  
+                self.logi_getTicket_count -= 1
+            time.sleep(3) 
+            counter += 1    
+
+    def logisticsGetFire(self):
+        self.enterChangle()
+        self.tap(1790,430)
+        print("选中消耗50源石锭\n")
+        time.sleep(1)
+        self.tap(1790,430)
+        print("点击消耗50源石锭\n")
+        time.sleep(5)
+        #self.tap(500,400)
+        #print("吸收\n")
+        time.sleep(4)
+        self.tap(1800,570)
+        print("选中厉如锋\n")
+        time.sleep(1)  
+        self.tap(1800,570)
+        print("点击厉如锋\n")
+        time.sleep(6)
+        if(self.fireSuccess()):
+            self.tap(960,960)
+            print("确认")
+            time.sleep(5)
+            #self.tap(500,400)
+            #print("吸收\n")
+            time.sleep(8)
+            self.tap(1790,820)
+            print("选中烛火")
+            time.sleep(1)
+            self.tap(1790,820)
+            print("点击烛火")
+            time.sleep(6)
+            self.tap(960,990)
+            print("结束fire")
+            self.getFireFlag = 1
+        else:
+            print("fire failure\n")
+            self.logisticsDealwithFailure()
+
+    def logisticsGetTicket(self):
+        self.enterChangle()
+        self.tap(1790,430)
+        print("选中消耗50源石锭\n")
+        time.sleep(1)
+        self.tap(1790,430)
+        print("点击消耗50源石锭\n")
+        time.sleep(5)
+        #self.tap(500,400)
+        #print("吸收\n")
+        time.sleep(4)
+        self.tap(1800,570)
+        print("选中厉如锋\n")
+        time.sleep(1)  
+        self.tap(1800,570)
+        print("点击厉如锋\n")
+        time.sleep(6)
+        if(self.fireSuccess()):
+            self.tap(960,960)
+            print("确认")
+            time.sleep(5)
+            #self.tap(500,400)
+            #print("吸收\n")
+            time.sleep(8)
+            self.tap(1790,585)
+            print("选中票卷")
+            time.sleep(1)
+            self.tap(1790,585)
+            print("点击票卷")
+            time.sleep(6)
+            self.tap(960,990)
+            print("结束ticket")
+            self.getTicketFlag = 1
+        else:
+            print("ticket failure\n")
+            self.logisticsDealwithFailure()
+    
+    def logisticsGetMoney(self):
+        self.targetOCR()
+        self.tap(1135,1021)
+        print("进入钱盒/n")
+        time.sleep(2)
+        while(self.dice):
+            self.tap(1850,152)
+            print("点击重新投钱")
+            time.sleep(2)           
+            self.tap(1440,730)
+            print("确认重新投钱")
+            time.sleep(8)
+            self.tap(1666,812)
+            print("确认结果")
+            self.dice -= 1
+            time.sleep(2)
+        self.tap(1140,1020)
+        print("返回")
+
+    def logisticsGetCollection(self):
+        self.logi_get_collection = int(self.logi_get_collection_entry.get())
+        c = 1
+        print(f"收取{self.logi_get_collection}次藏品\n")
+        while(self.logi_get_collection):
+            print(f"第{c}次：\n")
+            self.enterChangle()
+            self.tap(1790,430)
+            print("选中消耗50源石锭\n")
+            time.sleep(1)
+            self.tap(1790,430)
+            print("点击消耗50源石锭\n")
+            time.sleep(5)
+            #self.tap(500,400)
+            #print("吸收\n")
+            time.sleep(4)
+            self.tap(1800,570)
+            print("选中厉如锋\n")
+            time.sleep(1)  
+            self.tap(1800,570)
+            print("点击厉如锋\n")
+            time.sleep(6)
+            if(self.fireSuccess()):
+                self.tap(960,960)
+                print("确认")
+                time.sleep(5)
+                #self.tap(500,400)
+                #print("吸收\n")
+                time.sleep(4)
+                self.tap(1790,330)
+                print("选中收藏品")
+                time.sleep(1)
+                self.tap(1790,330)
+                print("点击收藏品")
+                time.sleep(3)
+                self.tap(980,824)
+                print("确认收藏品\n")
+                time.sleep(1)
+                self.tap(980,824)
+                print("确认收藏品\n")
+                time.sleep(1)
+                self.tap(980,824)
+                print("确认收藏品\n")
+                time.sleep(1)
+                self.tap(980,824)
+                print("确认收藏品\n")
+                time.sleep(1)
+                self.tap(980,824)
+                print("确认收藏品\n")
+                time.sleep(1)
+                self.tap(980,824)
+                print("确认收藏品\n")
+                time.sleep(2)
+                self.tap(960,990)
+                print("结束collection")
+            else:
+                print("collection failure\n")
+                self.logisticsDealwithFailure()
+            self.logi_get_collection -= 1
+            c += 1
 
     def ammeterReverse(self):  
         counter = 0      
@@ -820,6 +1035,91 @@ class LDPlayerController:
         else:
             print(f"no second chance\n")
             return 0    
+    
+    def secondChanceProcess_logistics(self):
+        self.tap(1790,440)
+        print("选择来就来\n")
+        time.sleep(2)
+        self.tap(1790,440)
+        print("确认来就来\n")
+        time.sleep(10)
+        self.tap(1800,570)
+        print("选中厉如锋\n")
+        time.sleep(1)  
+        self.tap(1800,570)
+        print("点击厉如锋\n")
+        time.sleep(6)
+        if(self.fireSuccess()):
+            self.tap(960,960)
+            print("确认")
+            time.sleep(5)
+            #self.tap(500,400)
+            #print("吸收\n")
+            time.sleep(4)
+            self.tap(1790,585)
+            print("选中票卷")
+            time.sleep(1)
+            self.tap(1790,585)
+            print("点击票卷")
+            time.sleep(6)
+            self.tap(960,990)
+            print("结束ticket")
+            self.getTicketFlag = 1
+        else:
+            self.logisticsDealwithFailure()
+
+    def secondChanceProcess(self):
+        self.tap(1790,440)
+        print("选择来就来\n")
+        time.sleep(2)
+        self.tap(1790,440)
+        print("确认来就来\n")
+        time.sleep(10)
+        self.tap(1800,570)
+        print("选中厉如锋\n")
+        time.sleep(1)  
+        self.tap(1800,570)
+        print("点击厉如锋\n")
+        time.sleep(6)
+        if(self.fireSuccess()):
+            self.tap(960,960)
+            print("确认")
+            time.sleep(5)
+            #self.tap(500,400)
+            #print("吸收\n")
+            time.sleep(4)
+            self.tap(1790,820)
+            print("选中烛火")
+            time.sleep(1)
+            self.tap(1790,820)
+            print("点击烛火")
+            time.sleep(6)
+            self.tap(960,990)
+            print("结束fire")
+            self.getFireFlag = 1
+        else:
+            self.logisticsDealwithFailure()
+    
+    def logisticsDealwithFailure(self):
+        self.tap(960,970)
+        print("确认失败\n")
+        time.sleep(5)
+        #self.tap(510,510)
+        #print("吸收\n")
+        time.sleep(5)
+        self.tap(1800,560)
+        print("选择倒霉啊\n")
+        time.sleep(2)
+        self.tap(1780,580)
+        print("确认倒霉啊\n")
+        time.sleep(10)
+        if(self.secondChance()):
+            self.secondChanceProcess_logistics()
+
+        else:
+            self.tap(960,980)
+            print("确认返回主页")
+            time.sleep(5)
     
     def dealwithFailure(self):
         self.tap(960,970)
