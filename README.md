@@ -47,7 +47,7 @@ def logisticsAR(self):<br>
 <img width="2866" height="1648" alt="屏幕截图 2025-09-14 124215" src="https://github.com/user-attachments/assets/4cf801b8-30f6-43f8-afbf-d291d0d3a38f" />
 ⚽后勤分队按钮图解：
 <img width="2879" height="1658" alt="屏幕截图 2025-09-14 125724" src="https://github.com/user-attachments/assets/95f6c1c1-e5af-4eda-b270-d95a2f41abea" />
-## TIPS:后勤分队也要向游客分队一样先获取令节点坐标哦😋😋
+## TIPS:后勤分队也要像游客分队一样先获取令节点坐标哦😋😋
 
 
 ## annaconda环境的包（paddleocr的环境，所以一堆包）
