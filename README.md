@@ -11,7 +11,7 @@
 1. ~~雷电模拟器~~1920*1080分辨率
 2. ~~游客分队~~ 现在游客后勤都可以啦😉详见https://www.bilibili.com/opus/1094537681990320135?from=search&spm_id_from=333.337.0.0
 3. 开始前模拟器放在这个界面：<img width="1920" height="1080" alt="Screenshot_20250901-173801" src="https://github.com/user-attachments/assets/772150e4-507d-4ff0-80e0-707f97e0b33d" />
-## 软件图解（试用于游客分队版本）
+## 软件图解（适用于游客分队版本）
 ⚽设备控制页：
 <img width="1989" height="1318" alt="1" src="https://github.com/user-attachments/assets/773ef14c-bd69-43ed-b09a-543328462d4d" />
 新版设备控制页，自定义adb路径，填上后手动点一下连接
