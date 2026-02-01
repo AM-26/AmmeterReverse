@@ -1,5 +1,5 @@
 # AmmeterReverse
-保肝护肝的电表倒转小程序，在界园界面刷到令节点就能用啦。因为是在本地给paddleocr准备的annaconda环境运行的，所以直接跑.py文件不大行，pyinstaller打包出来的exe高达4G大小,压缩包放度盘了：AmmeterReverse.rar 链接: https://pan.baidu.com/s/1Dp3ULlIRhHG5xHGM6Jn1tQ?pwd=dae3 提取码: dae3
+保肝护肝的电表倒转小程序，在界园界面刷到令节点就能用啦。~~因为是在本地给paddleocr准备的annaconda环境运行的，所以直接跑.py文件不大行~~环境导出为AmmeterReverseENV.yml文件啦，方便annaconda搭环境直接跑py。pyinstaller打包出来的exe高达4G大小,压缩包放度盘了：AmmeterReverse.rar 链接: https://pan.baidu.com/s/1Dp3ULlIRhHG5xHGM6Jn1tQ?pwd=dae3 提取码: dae3
 ### 更新了adb路径设置 ~~之前写死了别人用不了~~
 
 游客分队6衡6厉不像9厉1花百分百投钱成功，单纯记录按键位置的话碰到投钱失败就崩，所以加了对投钱失败的处理逻辑，失败时令姐还有概率给第二次机会，更麻烦啦🤪🤪
